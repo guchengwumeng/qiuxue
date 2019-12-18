@@ -25,7 +25,7 @@
     <div class="form-group">
         <div class="md-4"></div>
       <el-button type="primary" @click="cancel">取消</el-button>
-      <el-button type="primary" v-if="name&&id&&img" @click="save">保存</el-button>
+      <el-button type="primary" v-if="name&&id&&img" @click="save(id)">保存</el-button>
       <el-button type="info" v-else disabled>保存</el-button>
     </div>
     </div>
@@ -46,10 +46,10 @@ export default {
       let id=this.$route.query.id;
       this.title=this.$route.query.title;
       
-      if(!id){
+      if(id){
           this.axios.get(`/api/course/fpx/${id}`)
           .then(function(res){
-        console.log("1",res)
+        console.log("发起请求",res)
           })
           .catch(function(rtt){
         console.log("2",rtt)
@@ -82,10 +82,41 @@ console.log(this.img);
           ($("#file").click());   
       },
       cancel(){
+        // 取消
 
       },
-      save(){
+      save(id){
+        // 保存
+console.log(id)
+    let aa=33;
+    let bb=this.$route.query.id;
+    let title=this.$route.query.title;
+  if(id!=33&&bb){
+  this.$alert("请输入正确的课程ID",{
+    confirmButtonText:"确认",
+    center:true,
+    showClose:false,
+   closeOnClickModal:false
 
+  })
+  }else{
+        this.$router.push({path:"/banner"})
+        this.$router.push({
+                path:"/banner",
+                query:{
+                    alert:title    
+                }
+            })
+
+  }
+     
+
+
+
+
+        // this.$router.push({
+        //   path:"/banner"
+        // })
       }
 
 
@@ -97,6 +128,12 @@ console.log(this.img);
 <style lang="scss" scoped>
 * {
   box-sizing: border-box;
+}
+@media screen and (min-width:1500px){
+img{
+  width: auto;
+  height: 30rem;
+}
 }
 article {
   margin: 3rem 1rem;
@@ -121,8 +158,8 @@ b{
 }
 img{
     display:block;
-    max-width: 50%;
-    height: auto;
+    max-width: 60%;
+    
 }
 .row{
     display:flex;

@@ -25,8 +25,8 @@
                 <th>{{item.creat_at}}</th>
                 <th>{{item.status | statusFilters}}</th>
                 <th>
-                    <el-button type="primary" size="mini" @click="state">{{item.status | operationFilters}}</el-button>
-                    <el-button type="primary" size="mini" v-if="display(item.status)" @click="redact">编辑</el-button>
+                    <el-button type="primary" size="mini" @click="state(item.status)">{{item.status | operationFilters}}</el-button>
+                    <el-button type="primary" size="mini" v-if="display(item.status)" @click="redact(index+1)">编辑</el-button>
                     <el-button type="primary" size="mini" v-if="display(item.status)" @click="cancel">删除</el-button>
                 </th>
             </tr>
@@ -56,7 +56,7 @@ export default {
         }
     },
     created(){
-
+        let  alert=this.$route.query.alert;
         axios.get("/api/admin/banner/fpx")
         .then(function(res){
             console.log("1",res)
@@ -64,6 +64,17 @@ export default {
         .catch(function(rtt){
         console.log("2",rtt)
         })
+
+    if(alert){
+        // 新增、编辑页面跳转回来消息提示
+        this.$message({
+            type: "success",
+            message: alert+"成功"
+          });
+    }
+
+
+        
 
     },
     filters:{
@@ -97,14 +108,33 @@ export default {
         display(status){
             // 状态为下架隐藏按钮
             // console.log(status);
-        let b=status==0?false:true;
+        let b=status==1?false:true;
         return b;
         },
-        state(){
+        state(status){
             // 上下架
+        console.log(status)
+        let aa=status==0?'上架':'下架';
+
+        this.$confirm('是否'+aa+'该轮播图',"提示",{
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            type:"warning",
+            center:true,
+            showClose:false,
+            closeOnClickModal:false           
+        })
+        .then(()=>{
+            this.$message({
+                type:"success",
+                message:aa+'成功！'
+            })
+        })
+
         },
         redact(id){
             // 编辑
+            console.log(id)
             this.$router.push({
                 path:"/addbanner",
                 query:{
@@ -115,6 +145,23 @@ export default {
         },
         cancel(){
             // 删除
+        this.$confirm("是否删除该轮播图","警告",{
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            type:"warning",
+            center:true,
+            showClose:false,
+            closeOnClickModal:false 
+        })
+        .then(()=>{
+            this.$message({
+                type:"success",
+                message:'删除成功！'
+            })
+        })
+
+
+
         }
 
     }

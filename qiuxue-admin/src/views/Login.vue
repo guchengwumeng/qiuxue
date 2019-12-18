@@ -6,10 +6,16 @@
         <el-input prefix-icon="el-icon-user" v-model="accoun" placeholder="请输入内容"></el-input>
       </div>
       <div class="accoun">
-        <el-input prefix-icon="el-icon-lock" placeholder="请输入密码" v-model="cipher" @keyup.enter="press" show-password></el-input>
+        <el-input
+          prefix-icon="el-icon-lock"
+          placeholder="请输入密码"
+          v-model="cipher"
+          @keyup.enter="press"
+          show-password
+        ></el-input>
       </div>
       <P>{{ hint }}</P>
-      <button @click="login()" :class={}>登陆</button>
+      <button @click="login()">登陆</button>
     </div>
   </div>
 </template>
@@ -21,7 +27,7 @@ export default {
   name: "login",
   data() {
     return {
-      accoun: "",
+      accoun: "11",
       cipher: "",
       hint: ""
     };
@@ -29,30 +35,33 @@ export default {
   methods: {
     login() {
       // 登陆接口请求
-      var _this = this;
-      // axios
-      //   .post(
-      //     "/api/a/login",
-      //     qs.stringify({
-      //       name: this.accoun, // 登录名
-      //       pwd: this.cipher // 登录密码
-      //     })
-      //   )
-      //   .then(function(res) {
-      //     let code = res.data.code; // 获取状态码
-      //     //   let message = res.data.message; // 获取返回文本
-
-          let query = "2020";//登陆成功保存值
+      var _this = this;   
+    //  axios.post ("/api/admin/login/fpx",
+    //  qs.stringify({
+    //         name: this.accoun, // 登录名
+    //         password: this.cipher // 登录密码
+    //       }))
+    //     .then(function(res) {
+          // let code = res.data.code, // 获取状态码
+          //  message = res.data.msg, // 获取返回文本
+          let query = _this.accoun;//登陆成功保存值
           sessionStorage.setItem("query", JSON.stringify(query));
-      //     if (code == 0) {
+    //       if (code == 110200) {
             _this.$router.push({
               //页面跳转传参
               path: "/welcome"
             });
         //   } else {
-        //     // _this.hint = message;
-        //     _this.hint = "请输入正确的用户名及密码";
+        //     _this.hint = message;
+          
         //   }
+        // })
+        // .catch(function(err){
+        //   _this.$alert('登陆失败，服务器无法连接','',{
+        //     confirmButtonText: '确定',
+        //     center:true,
+        //     showClose:false
+        //   })
         // });
     },
     press() {
@@ -64,11 +73,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
-.accoun{
-    width: 80%;
-    margin-left: 10%;
-    margin-bottom: 20px;
+.accoun {
+  width: 80%;
+  margin-left: 10%;
+  margin-bottom: 20px;
 }
 
 .login {
@@ -108,7 +116,7 @@ export default {
     padding: 0;
     margin: 0;
     background-color: #e8983e;
-    color:#fff;
+    color: #fff;
     border: 0;
     border-radius: 8px;
     outline: none;
