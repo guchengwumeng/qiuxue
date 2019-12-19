@@ -22,20 +22,20 @@
         :unique-opened=true
         :router=true
       >
-      <div v-for="(item,index) in data" :key="index.id">
-        <el-submenu :index="item.index">
+      <div v-for="(item,index) in welcome" :key="index.id">
+        <el-submenu :index="String(item.sid)">
           <template slot="title">
           <i class="el-icon-s-tools"></i>
           <span slot="title">{{item.name}}</span>
           </template>
-          <div v-for="chidren in item.chidren" :key="chidren.id">
-            <el-menu-item :index="chidren.index" :route="chidren.route">
-           <i class="el-icon-edit-outline"></i>
-          <span slot="title">{{chidren.name}}</span>
-        </el-menu-item>
+          <div v-for="itme in item.welcomeChildren" :key="itme.id">
+            <el-menu-item :index="itme.sid" :route="itme.route">
+            <i class="el-icon-edit-outline"></i>
+            <span slot="title">{{itme.name}}</span>
+            </el-menu-item>
           </div>
         </el-submenu>
-        </div>
+      </div>
       </el-menu>
       <router-view></router-view>
     </div>
@@ -46,26 +46,30 @@ export default {
   name: "homepage",
   data() {
     return {
-      username: "admin",
-      qq:"",
-      data: [{name:"欢迎页",index:"1",chidren:[{name:"欢迎页",index:"1",route:"/welcome"}]},
-      {name:"banner管理",index:"2",chidren:[{name:"banner管理",index:"2",route:"/banner"}]},
-      {name:"公告管理",index:"3",chidren:[{name:"公告管理",index:"3",route:"/notice"}]},
-      {name:"课程管理",index:"4",chidren:[{name:"课程管理",index:"4",route:"/course"}]},
-      {name:"消息管理",index:"5",chidren:[{name:"消息管理",index:"5",route:"/message"}]},
-      {name:"后台管理",index:"6",
-      chidren:[{name:"模块管理",index:"6-1",route:"/module"},
-                                        {name:"角色管理",index:"6-2",route:"/role"},
-                                        {name:"后台用户管理",index:"6-3",route:"/id"},
-                                        {name:"修改密码",index:"6-4",route:"/password"}]},
-                                        {name:"用户管理",index:"7",chidren:[{name:"用户管理",index:"7",route:"/user"}]}
-      ]
+      username: "",
+      qq:"",    
+      welcome:[]
     };
   },
   mounted(){
-    this.qq=JSON.parse(sessionStorage.getItem("key"))||1;
-    console.log(this.qq)
+    this.qq=JSON.parse(sessionStorage.getItem("key"))||"1";
+    let query=JSON.parse(sessionStorage.getItem("query"));
+    this.username=query.name;
+    // let id="5";
+    let id=query.id;
+    let _this=this;
+this.axios.get(`/api/admin/welcome/fpx/${id}`)
+.then(res=>{
+  console.log(res)
+  // console.log(res.data.data.children)
+_this.welcome=res.data.data.children;
+console.log("we",_this.welcome)
 
+})
+.catch(ree=>{
+console.log(ree)
+this.$message.error("服务器连接不上，无法渲染数据！")
+})
 
   },
   methods: {
@@ -76,17 +80,14 @@ export default {
       // console.log(key, keyPath);
     },
     select(key,keyPath){
-console.log(key, keyPath);
-sessionStorage.setItem("key",JSON.stringify(key));
-
-
-
+  console.log(key);
+  // 保存选取状态
+  sessionStorage.setItem("key",JSON.stringify(key));
     },
     quit(){
       // 退出清除所有数据
       sessionStorage.clear();
       this.$router.push({ path: "/" });
-
     }
   }
 };
@@ -127,6 +128,6 @@ header {
 }
 .box {
   display: flex;
-  height: 92vh;
+  min-height: 92vh;
 }
 </style>

@@ -14,20 +14,19 @@
           show-password
         ></el-input>
       </div>
-      <P>{{ hint }}</P>
-      <button @click="login()">登陆</button>
+      <P>{{ hint }}</P>  
+      <button @click="login()">登陆</button>    
     </div>
   </div>
 </template>
 <script>
 import qs from "qs";
-import axios from "axios";
 
 export default {
   name: "login",
   data() {
     return {
-      accoun: "11",
+      accoun: "",
       cipher: "",
       hint: ""
     };
@@ -36,33 +35,39 @@ export default {
     login() {
       // 登陆接口请求
       var _this = this;   
-    //  axios.post ("/api/admin/login/fpx",
-    //  qs.stringify({
-    //         name: this.accoun, // 登录名
-    //         password: this.cipher // 登录密码
-    //       }))
-    //     .then(function(res) {
-          // let code = res.data.code, // 获取状态码
-          //  message = res.data.msg, // 获取返回文本
-          let query = _this.accoun;//登陆成功保存值
-          sessionStorage.setItem("query", JSON.stringify(query));
-    //       if (code == 110200) {
+    this.axios.post ("/api/admin/login/fpx",
+     qs.stringify({
+            name: this.accoun, // 登录名
+            password: this.cipher // 登录密码
+          }))
+        .then(res=>{
+          // console.log(res)
+          // console.log(res.data.data.id)
+          let code = res.data.code, // 获取状态码
+           message = res.data.msg; // 获取返回文本
+          if (code == 110200) {
+            let id=res.data.data.id;
+            let query = {
+              name:_this.accoun,//登陆成功保存值
+              id:id
+              };
+            sessionStorage.setItem("query", JSON.stringify(query));
             _this.$router.push({
               //页面跳转传参
               path: "/welcome"
             });
-        //   } else {
-        //     _this.hint = message;
-          
-        //   }
-        // })
-        // .catch(function(err){
-        //   _this.$alert('登陆失败，服务器无法连接','',{
-        //     confirmButtonText: '确定',
-        //     center:true,
-        //     showClose:false
-        //   })
-        // });
+          } else {
+            _this.hint = message;
+          }
+        })
+        .catch(err=>{
+          console.log(err)
+          _this.$alert('登陆失败，服务器无法连接','',{
+            confirmButtonText: '确定',
+            center:true,
+            showClose:false
+          })
+        });
     },
     press() {
       // 回车跳转

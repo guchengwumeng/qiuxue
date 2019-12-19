@@ -1,11 +1,12 @@
 <template>
+<div class="addbanner">
   <article>
     <div class="heading">banner{{ title}}</div>
     <div class="row">
     <div class="form-group">
       <label class="md-4">名称<b v-if="name==''">&#10045;</b></label>
       <div class="md-8">
-        <el-input v-model="name" placeholder="轮播图名称" maxlength="10"></el-input>
+        <el-input v-model="name" placeholder="轮播图名称" maxlength="10" :show-word-limit='true'></el-input>
       </div>
     </div>
     <div class="form-group">
@@ -30,6 +31,7 @@
     </div>
     </div>
   </article>
+  </div>
 </template>
 <script>
 export default {
@@ -109,14 +111,6 @@ console.log(id)
             })
 
   }
-     
-
-
-
-
-        // this.$router.push({
-        //   path:"/banner"
-        // })
       }
 
 
@@ -135,6 +129,10 @@ img{
   height: 30rem;
 }
 }
+.addbanner{
+  display:flex;
+  width: 100%;
+
 article {
   margin: 3rem 1rem;
   width: 100%;
@@ -148,7 +146,7 @@ article {
     margin-bottom:5rem;
   }
 }
-
+}
 b{
     color:#c9302c;
     font-size: small;

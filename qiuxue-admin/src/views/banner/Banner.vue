@@ -58,10 +58,11 @@ export default {
     created(){
         let  alert=this.$route.query.alert;
         axios.get("/api/admin/banner/fpx")
-        .then(function(res){
+        .then(res=>{
             console.log("1",res)
+            console.log(res.data)
         })
-        .catch(function(rtt){
+        .catch(rtt=>{
         console.log("2",rtt)
         })
 

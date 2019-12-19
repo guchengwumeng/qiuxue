@@ -3,6 +3,11 @@ import ElementUI from 'element-ui'
 import axios from 'axios'
 import App from './App.vue'
 import router from './router/index'
+import VueRouter from 'vue-router';
+const routerPush = VueRouter.prototype.push
+VueRouter.prototype.push = function push(location) {
+  return routerPush.call(this, location).catch(error=> error)
+}
 
 Vue.use(ElementUI) // 全局引入ui框架
 Vue.prototype.axios = axios

@@ -26,7 +26,6 @@ import Role from '@/views/background/role/Role'
 import Addrole from '@/views/background/role/Addrole'
 import Editrole from '@/views/background/role/Editrole'
 import User from '@/views/user/User'
-
 Vue.use(Router)
 
 export default new Router({

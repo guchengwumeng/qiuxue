@@ -11,16 +11,37 @@
         style="width: 96%;margin:2%;"
         :header-cell-style="{background:'#eef1f6',color:'#606266'}"
       >
-        <el-table-column prop="id" label="id" width="50"></el-table-column>
-        <el-table-column prop="title" label="名称" width="80"></el-table-column>
-        <el-table-column prop="createBy" label="创建人"></el-table-column>
-        <el-table-column prop="createAt" label="创建时间"></el-table-column>
-        <el-table-column prop="status" label="状态"></el-table-column>
-        <el-table-column label="操作">
+        <el-table-column align="center" prop="id" label="id"></el-table-column>
+        <el-table-column align="center" prop="title" label="名称"></el-table-column>
+        <el-table-column align="center" prop="createBy" label="创建人"></el-table-column>
+        <el-table-column align="center" prop="createAt" label="创建时间"></el-table-column>
+        <el-table-column align="center" prop="status" label="状态"></el-table-column>
+        <el-table-column align="center" label="操作" width="250">
           <template slot-scope="scope">
-            <el-button @click="edit(scope.row)" size="mini" type="success">编辑</el-button>
-            <el-button @click="remove(scope.row)" size="mini" type="success">删除</el-button>
-            <el-button size="mini" type="success">上线</el-button>
+            <el-button
+              v-if="display(scope.row)"
+              @click="edit(scope.row)"
+              size="mini"
+              type="success"
+            >编辑</el-button>
+            <el-button
+              v-if="display(scope.row)"
+              @click="remove(scope.row)"
+              size="mini"
+              type="success"
+            >删除</el-button>
+            <el-button
+              v-if="scope.row.status == 0 "
+              @click="putaway(scope.row)"
+              size="mini"
+              type="success"
+            >上架</el-button>
+            <el-button
+              v-if="scope.row.status == 1 "
+              @click="putaway(scope.row)"
+              size="mini"
+              type="success"
+            >下架</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -38,30 +59,50 @@ export default {
           id: "",
           title: "",
           createBy: "",
-          createAt:"",
-          status:""
+          createAt: "",
+          status: ""
         }
       ]
     };
   },
   created() {
-    this.list()
+    this.list();
   },
   methods: {
     //列表
-    list(){
-      let aptd =
-        "api/admin/notice/fpx";
-
-      axios.get(aptd).then(res => {
-        console.log(res);
-        // this.tableData=res.data
-        console.log(this.tableData)
+    list() {
+      axios.get("api/admin/notice/fpx").then(res => {
+        console.log(res.data.data);
+        this.tableData = res.data.data;
+        console.log(this.tableData);
+        this.loading = false;
       });
+    },
+    //编辑删除显示隐藏
+    display(row) {
+      // 状态为下架隐藏按钮
+      // console.log(status);
+      let b = row.status == 1 ? false : true;
+      return b;
     },
     //编辑
     edit(row) {
-      this.$confirm("是否删除此条公告, 是否继续?", "提示", {
+      this.$router.push({
+        path: "/addnotice",
+        query: {
+          status: "1",
+          id: row.id
+        }
+      });
+    },
+    //新增
+    add() {
+      let x = 0;
+      this.$router.push({ path: "/addnotice" });
+    },
+    //上下架
+    putaway() {
+      this.$confirm("是否上下架此条公告, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
@@ -72,8 +113,6 @@ export default {
             message: "操作成功!"
           });
           console.log(row.id);
-          console.log(row.status);
-          this.$router.push({ path: "/editnotice" });
         })
         .catch(() => {
           this.$message({
@@ -82,8 +121,6 @@ export default {
           });
         });
     },
-    //新增
-    add() {},
     //删除
     remove(row) {
       this.$confirm("是否删除此条公告, 是否继续?", "提示", {
@@ -97,6 +134,11 @@ export default {
             message: "操作成功!"
           });
           console.log(row.id);
+          axios.delete("api/admin/notice/fpx/" + row.id).then(res => {
+            console.log(res);
+
+            this.list();
+          });
         })
         .catch(() => {
           this.$message({
